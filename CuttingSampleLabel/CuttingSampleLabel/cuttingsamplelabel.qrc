@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="CuttingSampleLabel">
+    <file>Icon/label.png</file>
+    <file>Icon/close.png</file>
+    <file>Icon/draw.png</file>
+    <file>Icon/openFolder.png</file>
+    <file>Icon/save.png</file>
+    <file>Icon/zoomIn.png</file>
+    <file>Icon/zoomOut.png</file>
+    <file>Icon/openFile.png</file>
+  </qresource>
+</RCC>
