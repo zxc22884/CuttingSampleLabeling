@@ -35,6 +35,9 @@ public:
     QAction *_actionSave;
     QAction *_actionLabel;
     QAction *_actionDraw;
+    QAction *_actionNextImage;
+    QAction *_actionPreviousImage;
+    QAction *_actionOpenFolder;
     QWidget *centralWidget;
     QLabel *label;
     MyGraphicView *graphicsView;
@@ -87,6 +90,21 @@ public:
         QIcon icon4;
         icon4.addFile(QStringLiteral(":/CuttingSampleLabel/Icon/draw.png"), QSize(), QIcon::Normal, QIcon::Off);
         _actionDraw->setIcon(icon4);
+        _actionNextImage = new QAction(CuttingSampleLabelClass);
+        _actionNextImage->setObjectName(QStringLiteral("_actionNextImage"));
+        QIcon icon5;
+        icon5.addFile(QStringLiteral(":/CuttingSampleLabel/Icon/next.png"), QSize(), QIcon::Normal, QIcon::Off);
+        _actionNextImage->setIcon(icon5);
+        _actionPreviousImage = new QAction(CuttingSampleLabelClass);
+        _actionPreviousImage->setObjectName(QStringLiteral("_actionPreviousImage"));
+        QIcon icon6;
+        icon6.addFile(QStringLiteral(":/CuttingSampleLabel/Icon/previous.png"), QSize(), QIcon::Normal, QIcon::Off);
+        _actionPreviousImage->setIcon(icon6);
+        _actionOpenFolder = new QAction(CuttingSampleLabelClass);
+        _actionOpenFolder->setObjectName(QStringLiteral("_actionOpenFolder"));
+        QIcon icon7;
+        icon7.addFile(QStringLiteral(":/CuttingSampleLabel/Icon/openFolder.png"), QSize(), QIcon::Normal, QIcon::Off);
+        _actionOpenFolder->setIcon(icon7);
         centralWidget = new QWidget(CuttingSampleLabelClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         label = new QLabel(centralWidget);
@@ -150,6 +168,7 @@ public:
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuTool->menuAction());
         menuFile->addAction(_actionOpenFile);
+        menuFile->addAction(_actionOpenFolder);
         menuFile->addSeparator();
         menuFile->addAction(_actionSave);
         menuFile->addSeparator();
@@ -157,8 +176,9 @@ public:
         menuTool->addAction(_actionLabel);
         menuTool->addSeparator();
         menuTool->addAction(_actionDraw);
-        mainToolBar->addAction(_actionOpenFile);
-        mainToolBar->addAction(_actionSave);
+        menuTool->addSeparator();
+        menuTool->addAction(_actionNextImage);
+        menuTool->addAction(_actionPreviousImage);
         mainToolBar->addSeparator();
 
         retranslateUi(CuttingSampleLabelClass);
@@ -174,6 +194,9 @@ public:
         _actionSave->setText(QApplication::translate("CuttingSampleLabelClass", "Save", 0));
         _actionLabel->setText(QApplication::translate("CuttingSampleLabelClass", "Label", 0));
         _actionDraw->setText(QApplication::translate("CuttingSampleLabelClass", "Draw", 0));
+        _actionNextImage->setText(QApplication::translate("CuttingSampleLabelClass", "Next Image", 0));
+        _actionPreviousImage->setText(QApplication::translate("CuttingSampleLabelClass", "Previous Image", 0));
+        _actionOpenFolder->setText(QApplication::translate("CuttingSampleLabelClass", "Open Folder", 0));
         label->setText(QApplication::translate("CuttingSampleLabelClass", "<html><head/><body><p>\345\234\213\347\253\213\345\217\260\345\214\227\347\247\221\346\212\200\345\244\247\345\255\270 \350\263\207\350\250\212\345\267\245\347\250\213\347\263\273 1323\345\257\246\351\251\227\345\256\244 \351\231\263\345\275\245\351\234\226\346\225\231\346\216\210\345\234\230\351\232\212 \351\226\213\347\231\274\350\200\205:\345\221\202\345\255\237\347\251\216</p></body></html>", 0));
         groupLabelType->setTitle(QApplication::translate("CuttingSampleLabelClass", "LabelType", 0));
         radioSpotLabelBt->setText(QApplication::translate("CuttingSampleLabelClass", "Spot", 0));

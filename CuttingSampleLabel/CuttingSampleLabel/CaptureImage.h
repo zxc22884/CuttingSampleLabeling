@@ -6,6 +6,7 @@
 #include <opencv2\highgui\highgui.hpp>
 #include <opencv2\opencv.hpp>
 #include <opencv2\imgproc\imgproc.hpp>
+#include <QString>
 
 #include "LabelType.h"
 
@@ -23,11 +24,12 @@ public:
 	int _destX, _destY;
 	int _fileNumber = 0;
 
-	std::vector<std::vector<LabelType>> _result;
-	std::vector<std::string> _fileName;
+	std::vector<std::vector<LabelType>> _result; //放結果
+	std::vector<std::string> _fileName; //檔名
 
-	void DrawResult();
-	void DrawCapture();
+	void SetUpImageQueue(QStringList qFileName); //把檔名存入
+	void DrawResult(); //畫結果
+	void DrawCapture(); //畫暫時的結果
 
 	CaptureImage();
 	~CaptureImage();

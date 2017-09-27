@@ -2,12 +2,6 @@
 #include <QDir>
 #include <QDebug>
 
-//CaptureImage::CaptureImage(CommandManager *commandManager, QWidget *widget)
-//{
-//	this -> _commandManager = commandManager;
-//	this->_widget = widget;
-//}
-
 CaptureImage::CaptureImage()
 {
 
@@ -20,6 +14,7 @@ CaptureImage::~CaptureImage()
 
 void CaptureImage::DrawCapture()
 {
+
 
 }
 
@@ -51,3 +46,13 @@ void CaptureImage::DrawResult()
 	cv::imwrite(rowPath + std::to_string(myCount) + ".jpg", _rawData);
 
 }
+
+void CaptureImage::SetUpImageQueue(QStringList qFileName)
+{
+	_fileName.clear();
+	for (int i = 0; i < qFileName.count(); i++)
+	{
+		_fileName.push_back(qFileName[i].toStdString());
+	}
+}
+;

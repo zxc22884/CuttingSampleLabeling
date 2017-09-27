@@ -197,6 +197,7 @@
      <string>File</string>
     </property>
     <addaction name="_actionOpenFile"/>
+    <addaction name="_actionOpenFolder"/>
     <addaction name="separator"/>
     <addaction name="_actionSave"/>
     <addaction name="separator"/>
@@ -209,6 +210,9 @@
     <addaction name="_actionLabel"/>
     <addaction name="separator"/>
     <addaction name="_actionDraw"/>
+    <addaction name="separator"/>
+    <addaction name="_actionNextImage"/>
+    <addaction name="_actionPreviousImage"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTool"/>
@@ -226,8 +230,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="_actionOpenFile"/>
-   <addaction name="_actionSave"/>
    <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar">
@@ -278,6 +280,33 @@
    </property>
    <property name="text">
     <string>Draw</string>
+   </property>
+  </action>
+  <action name="_actionNextImage">
+   <property name="icon">
+    <iconset resource="cuttingsamplelabel.qrc">
+     <normaloff>:/CuttingSampleLabel/Icon/next.png</normaloff>:/CuttingSampleLabel/Icon/next.png</iconset>
+   </property>
+   <property name="text">
+    <string>Next Image</string>
+   </property>
+  </action>
+  <action name="_actionPreviousImage">
+   <property name="icon">
+    <iconset resource="cuttingsamplelabel.qrc">
+     <normaloff>:/CuttingSampleLabel/Icon/previous.png</normaloff>:/CuttingSampleLabel/Icon/previous.png</iconset>
+   </property>
+   <property name="text">
+    <string>Previous Image</string>
+   </property>
+  </action>
+  <action name="_actionOpenFolder">
+   <property name="icon">
+    <iconset resource="cuttingsamplelabel.qrc">
+     <normaloff>:/CuttingSampleLabel/Icon/openFolder.png</normaloff>:/CuttingSampleLabel/Icon/openFolder.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open Folder</string>
    </property>
   </action>
  </widget>
