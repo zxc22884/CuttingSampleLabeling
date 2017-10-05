@@ -41,15 +41,15 @@ void CuttingSampleLabel::CreateActions()
 	connect(ui._actionOpenFile, SIGNAL(triggered()), this, SLOT(OpenFile())); //開檔案
 	connect(ui._actionOpenFolder, SIGNAL(triggered()), this, SLOT(OpenFolder()));//開資料夾
 	connect(ui._actionSave, SIGNAL(triggered()), this, SLOT(SaveResult())); //儲存
-	connect(ui._actionNextImage, SIGNAL(triggered()), this, SLOT(NextImage()));
-	connect(ui._actionPreviousImage, SIGNAL(triggered()), this, SLOT(PreviousImage()));
+	connect(ui._actionNextImage, SIGNAL(triggered()), this, SLOT(NextImage())); //下一張
+	connect(ui._actionPreviousImage, SIGNAL(triggered()), this, SLOT(PreviousImage())); //上一張
 	connect(ui.graphicsView, SIGNAL(MousePress()), this, SLOT(MousePressed()));
 	connect(ui.graphicsView, SIGNAL(MouseMove()), this, SLOT(MouseMoved()));
 	connect(ui.graphicsView, SIGNAL(MouseRelease()), this, SLOT(MouseReleased()));
-	connect(ui.radioSpotLabelBt, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick()));
-	connect(ui.radioMetalLabelBt, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick()));
-	connect(ui.radioOilLabelBt, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick()));
-	connect(ui.radioOthersLabelBt, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick()));
+	connect(ui.radioSpotLabelBt, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick())); //點到Radio Button
+	connect(ui.radioMetalLabelBt, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick())); //點到Radio Button
+	connect(ui.radioOilLabelBt, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick())); //點到Radio Button
+	connect(ui.radioOthersLabelBt, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick())); //點到Radio Button
 }
 
 void CuttingSampleLabel::AddActionToToolBar()
@@ -83,6 +83,22 @@ void CuttingSampleLabel::OnRadioButtonClick()
 	_labelType.typeId = RadioTextToID(rdb->text());
 	qDebug() << rdb->text();
 	qDebug() << RadioTextToID(rdb->text());
+}
+
+int  CuttingSampleLabel::RadioTextToID(QString &str) //得到 radioButton的 ID
+{
+	QString ids[] = { "Spot", "Metal", "Oil", "Others" };
+	int len = sizeof(ids) / sizeof(*ids);
+
+	for (int i = 0; i < len; i++)
+	{
+		if (ids[i] == str)
+		{
+			return i;
+		}
+
+	}
+	return -1;
 }
 
 void CuttingSampleLabel::OpenFolder()
@@ -119,6 +135,7 @@ void CuttingSampleLabel::OpenFolder()
 			QMessageBox::information(this, tr("Warring OpenFolder"), tr("No image in this folder!!"));
 		}
 	}
+	CheckImageNumbers();
 
 }
 
@@ -139,10 +156,10 @@ void CuttingSampleLabel::OpenFile()
 		ui.graphicsView->_mouseStatus = true;
 		//qDebug() << "openSuccess";
 	}
-		
+	CheckImageNumbers();
 }
 
-void CuttingSampleLabel::OpenRawData()
+void CuttingSampleLabel::OpenRawData() //開原始檔案
 {
 	_captureImage._rawData.release();
 	_captureImage._rawData = cv::imread(_captureImage._fileName[_captureImage._fileNumber]);
@@ -154,7 +171,7 @@ void CuttingSampleLabel::OpenRawData()
 	ShowQImage();
 }
 
-void CuttingSampleLabel::ConvertMatToQImage()
+void CuttingSampleLabel::ConvertMatToQImage() //轉影像為QImage
 {
 	if (_captureImage._rawData.channels() == 3) //三通道
 	{
@@ -168,7 +185,7 @@ void CuttingSampleLabel::ConvertMatToQImage()
 
 }
 
-void CuttingSampleLabel::ShowQImage()
+void CuttingSampleLabel::ShowQImage() //顯示Image
 {
 	QGraphicsScene *scene = new QGraphicsScene;
 	scene->addPixmap(QPixmap::fromImage(_qImage));
@@ -176,24 +193,7 @@ void CuttingSampleLabel::ShowQImage()
 
 }
 
-int  CuttingSampleLabel::RadioTextToID(QString &str)
-{
-	QString ids[] = { "Spot", "Metal", "Oil", "Others" };
-	int len = sizeof(ids) / sizeof(*ids);
-
-	for (int i = 0; i < len; i++)
-	{
-		if (ids[i] == str)
-		{
-			return i;
-		}
-	
-	}
-	return -1;
-}
-
-
-void CuttingSampleLabel::SaveResult()
+void CuttingSampleLabel::SaveResult() //儲存
 {
 	ui.graphicsView->_mouseStatus = false;
 	
@@ -223,16 +223,49 @@ void CuttingSampleLabel::SaveResult()
 	{
 		QMessageBox::information(this, tr("Warring"), tr("No Image !!"));
 	}
+	CheckImageNumbers();
 
 }
 
 void CuttingSampleLabel::NextImage()
 {
+	_captureImage._fileNumber++;
+	ui.graphicsView->_mouseStatus = true;
+	InitialCaptureResult();
+	OpenRawData();
 
+	CheckImageNumbers();
 }
 
 void CuttingSampleLabel::PreviousImage()
 {
+	_captureImage._fileNumber--;
+	ui.graphicsView->_mouseStatus = true;
+	InitialCaptureResult();
+	OpenRawData();
+	CheckImageNumbers();
+}
+
+void CuttingSampleLabel::CheckImageNumbers()
+{
+
+	if (_captureImage._fileNumber > 0 && _captureImage._fileNumber + 1 < _captureImage._fileName.size())
+	{
+		ui._actionNextImage->setEnabled(true);
+		ui._actionPreviousImage->setEnabled(true);
+	}
+
+	if (_captureImage._fileNumber == 0 && _captureImage._fileNumber + 1 < _captureImage._fileName.size())
+	{
+		ui._actionNextImage->setEnabled(true);
+		ui._actionPreviousImage->setEnabled(false);
+	}
+
+	if (_captureImage._fileNumber + 1 == _captureImage._fileName.size() && _captureImage._fileNumber != 0)
+	{
+		ui._actionNextImage->setEnabled(false);
+		ui._actionPreviousImage->setEnabled(true);
+	}
 
 }
 

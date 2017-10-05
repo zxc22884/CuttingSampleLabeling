@@ -32,6 +32,8 @@ private:
 	QStringList _filePath;
 	QImage _qImage;
 	LabelType _labelType;
+	std::vector<QRadioButton> _labelRadioButton;
+	std::vector<QRadioButton> _colorRadioButton;
 
 	bool _saveFlag = false;
 
@@ -41,7 +43,8 @@ private:
 	void ConvertMatToQImage(); //Mat轉QImage
 	void ShowQImage(); //在GraphicsView 顯示
 	void InitialCaptureResult(); //初始化Result次數
-	int  RadioTextToID(QString &str); 
+	void CheckImageNumbers(); //看還有幾張
+ 	int  RadioTextToID(QString &str); 
 
 private slots:
 
