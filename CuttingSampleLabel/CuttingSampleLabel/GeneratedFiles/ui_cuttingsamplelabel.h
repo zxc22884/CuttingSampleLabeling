@@ -17,10 +17,11 @@
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
@@ -42,10 +43,9 @@ public:
     QLabel *label;
     MyGraphicView *graphicsView;
     QGroupBox *groupLabelType;
-    QRadioButton *radioSpotLabelBt;
-    QRadioButton *radioMetalLabelBt;
-    QRadioButton *radioOilLabelBt;
-    QRadioButton *radioOthersLabelBt;
+    QPushButton *_okPushButton;
+    QLineEdit *_lineEdit;
+    QLabel *_radioAddLabel;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuTool;
@@ -117,42 +117,31 @@ public:
         graphicsView->setAlignment(Qt::AlignCenter);
         groupLabelType = new QGroupBox(centralWidget);
         groupLabelType->setObjectName(QStringLiteral("groupLabelType"));
-        groupLabelType->setGeometry(QRect(10, 10, 151, 141));
+        groupLabelType->setGeometry(QRect(10, 10, 151, 301));
         groupLabelType->setFlat(false);
-        radioSpotLabelBt = new QRadioButton(groupLabelType);
-        radioSpotLabelBt->setObjectName(QStringLiteral("radioSpotLabelBt"));
-        radioSpotLabelBt->setGeometry(QRect(10, 30, 101, 16));
-        QFont font;
-        font.setFamily(QStringLiteral("Arial"));
-        font.setPointSize(12);
-        font.setBold(false);
-        font.setWeight(50);
-        radioSpotLabelBt->setFont(font);
-        radioMetalLabelBt = new QRadioButton(groupLabelType);
-        radioMetalLabelBt->setObjectName(QStringLiteral("radioMetalLabelBt"));
-        radioMetalLabelBt->setGeometry(QRect(10, 50, 121, 16));
-        radioMetalLabelBt->setFont(font);
-        radioOilLabelBt = new QRadioButton(groupLabelType);
-        radioOilLabelBt->setObjectName(QStringLiteral("radioOilLabelBt"));
-        radioOilLabelBt->setGeometry(QRect(10, 70, 111, 16));
-        radioOilLabelBt->setFont(font);
-        radioOthersLabelBt = new QRadioButton(groupLabelType);
-        radioOthersLabelBt->setObjectName(QStringLiteral("radioOthersLabelBt"));
-        radioOthersLabelBt->setGeometry(QRect(10, 90, 111, 16));
-        radioOthersLabelBt->setFont(font);
+        _okPushButton = new QPushButton(centralWidget);
+        _okPushButton->setObjectName(QStringLiteral("_okPushButton"));
+        _okPushButton->setGeometry(QRect(1170, 80, 75, 23));
+        _lineEdit = new QLineEdit(centralWidget);
+        _lineEdit->setObjectName(QStringLiteral("_lineEdit"));
+        _lineEdit->setEnabled(true);
+        _lineEdit->setGeometry(QRect(1150, 50, 113, 20));
+        _radioAddLabel = new QLabel(centralWidget);
+        _radioAddLabel->setObjectName(QStringLiteral("_radioAddLabel"));
+        _radioAddLabel->setGeometry(QRect(1160, 20, 101, 20));
         CuttingSampleLabelClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(CuttingSampleLabelClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 1280, 23));
-        QFont font1;
-        font1.setPointSize(10);
-        menuBar->setFont(font1);
+        QFont font;
+        font.setPointSize(10);
+        menuBar->setFont(font);
         menuBar->setNativeMenuBar(false);
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
-        QFont font2;
-        font2.setPointSize(9);
-        menuFile->setFont(font2);
+        QFont font1;
+        font1.setPointSize(9);
+        menuFile->setFont(font1);
         menuTool = new QMenu(menuBar);
         menuTool->setObjectName(QStringLiteral("menuTool"));
         CuttingSampleLabelClass->setMenuBar(menuBar);
@@ -175,8 +164,6 @@ public:
         menuFile->addAction(_actionExit);
         menuTool->addAction(_actionLabel);
         menuTool->addSeparator();
-        menuTool->addAction(_actionDraw);
-        menuTool->addSeparator();
         menuTool->addAction(_actionNextImage);
         menuTool->addAction(_actionPreviousImage);
         mainToolBar->addSeparator();
@@ -192,17 +179,15 @@ public:
         _actionOpenFile->setText(QApplication::translate("CuttingSampleLabelClass", "Open File", 0));
         _actionExit->setText(QApplication::translate("CuttingSampleLabelClass", "Quit", 0));
         _actionSave->setText(QApplication::translate("CuttingSampleLabelClass", "Save", 0));
-        _actionLabel->setText(QApplication::translate("CuttingSampleLabelClass", "Label", 0));
+        _actionLabel->setText(QApplication::translate("CuttingSampleLabelClass", "Add Label", 0));
         _actionDraw->setText(QApplication::translate("CuttingSampleLabelClass", "Draw", 0));
         _actionNextImage->setText(QApplication::translate("CuttingSampleLabelClass", "Next Image", 0));
         _actionPreviousImage->setText(QApplication::translate("CuttingSampleLabelClass", "Previous Image", 0));
         _actionOpenFolder->setText(QApplication::translate("CuttingSampleLabelClass", "Open Folder", 0));
         label->setText(QApplication::translate("CuttingSampleLabelClass", "<html><head/><body><p>\345\234\213\347\253\213\345\217\260\345\214\227\347\247\221\346\212\200\345\244\247\345\255\270 \350\263\207\350\250\212\345\267\245\347\250\213\347\263\273 1323\345\257\246\351\251\227\345\256\244 \351\231\263\345\275\245\351\234\226\346\225\231\346\216\210\345\234\230\351\232\212 \351\226\213\347\231\274\350\200\205:\345\221\202\345\255\237\347\251\216</p></body></html>", 0));
         groupLabelType->setTitle(QApplication::translate("CuttingSampleLabelClass", "LabelType", 0));
-        radioSpotLabelBt->setText(QApplication::translate("CuttingSampleLabelClass", "Spot", 0));
-        radioMetalLabelBt->setText(QApplication::translate("CuttingSampleLabelClass", "Metal", 0));
-        radioOilLabelBt->setText(QApplication::translate("CuttingSampleLabelClass", "Oil", 0));
-        radioOthersLabelBt->setText(QApplication::translate("CuttingSampleLabelClass", "Others", 0));
+        _okPushButton->setText(QApplication::translate("CuttingSampleLabelClass", "OK", 0));
+        _radioAddLabel->setText(QApplication::translate("CuttingSampleLabelClass", "Add Labeling Type", 0));
         menuFile->setTitle(QApplication::translate("CuttingSampleLabelClass", "File", 0));
         menuTool->setTitle(QApplication::translate("CuttingSampleLabelClass", "Tool", 0));
     } // retranslateUi

@@ -2,6 +2,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDebug>
+#include <direct.h>
 
 #include "MyGraphicView.h"
 
@@ -12,10 +13,17 @@ CuttingSampleLabel::CuttingSampleLabel(QWidget *parent)
 	ui.setupUi(this);
 	QString s = QStringLiteral("國立台北科技大學 資訊工程系 1323實驗室 陳彥霖教授團隊 開發者:呂孟穎");
 	ui.statusBar->showMessage(s);
+	ui._lineEdit->setVisible(false);
+	ui._radioAddLabel->setVisible(false);
+	ui._okPushButton->setVisible(false);
+
 	CreateActions();
 	AddActionToToolBar();
 	setAcceptDrops(true);
 	setMouseTracking(true);
+	InitialLabelRadioButton();
+
+
 }
 
 CuttingSampleLabel::~CuttingSampleLabel()
@@ -28,11 +36,13 @@ void CuttingSampleLabel::InitialCaptureResult()
 	_captureImage._result.clear();
 
 	std::vector<LabelType> temp;
-	temp.clear();
-	_captureImage._result.push_back(temp);
-	_captureImage._result.push_back(temp);
-	_captureImage._result.push_back(temp);
-	_captureImage._result.push_back(temp);
+	for (int i = 0; i < _labelRadioButton.size(); i++)
+	{
+		_captureImage._result.push_back(temp);
+		qDebug() << "CAP" << _captureImage._result.size();
+	}
+	qDebug() << "bt"<<_labelRadioButton.size();
+	qDebug() << "CAP" << _captureImage._result.size();
 }
 
 void CuttingSampleLabel::CreateActions()
@@ -46,10 +56,9 @@ void CuttingSampleLabel::CreateActions()
 	connect(ui.graphicsView, SIGNAL(MousePress()), this, SLOT(MousePressed()));
 	connect(ui.graphicsView, SIGNAL(MouseMove()), this, SLOT(MouseMoved()));
 	connect(ui.graphicsView, SIGNAL(MouseRelease()), this, SLOT(MouseReleased()));
-	connect(ui.radioSpotLabelBt, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick())); //點到Radio Button
-	connect(ui.radioMetalLabelBt, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick())); //點到Radio Button
-	connect(ui.radioOilLabelBt, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick())); //點到Radio Button
-	connect(ui.radioOthersLabelBt, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick())); //點到Radio Button
+	connect(ui._actionLabel, SIGNAL(triggered()), this, SLOT(ShowAddLabelRadioButton())); //新增種類
+	connect(ui._okPushButton, SIGNAL(clicked()), this, SLOT(AddLabelRadioButton()));
+
 }
 
 void CuttingSampleLabel::AddActionToToolBar()
@@ -61,7 +70,7 @@ void CuttingSampleLabel::AddActionToToolBar()
 	ui.mainToolBar->addAction(ui._actionSave);
 	ui.mainToolBar->addSeparator();
 	//ui.mainToolBar->addSeparator();
-	//ui.mainToolBar->addAction(ui._actionLabel);
+	ui.mainToolBar->addAction(ui._actionLabel);
 	//ui.mainToolBar->addAction(ui._actionDraw);
 	ui.mainToolBar->addSeparator();
 	ui.mainToolBar->addAction(ui._actionPreviousImage);
@@ -69,10 +78,9 @@ void CuttingSampleLabel::AddActionToToolBar()
 
 	ui._actionNextImage->setEnabled(false);
 	ui._actionPreviousImage->setEnabled(false);
-	ui.radioSpotLabelBt->setChecked(true);
-	_labelType.name = ui.radioSpotLabelBt->text().toStdString();
 	_labelType.typeId = 0;
 }
+
 void CuttingSampleLabel::OnRadioButtonClick()
 {
 	QObject* obj = sender();
@@ -81,24 +89,144 @@ void CuttingSampleLabel::OnRadioButtonClick()
 
 	_labelType.name = rdb->text().toStdString();
 	_labelType.typeId = RadioTextToID(rdb->text());
-	qDebug() << rdb->text();
-	qDebug() << RadioTextToID(rdb->text());
+
+
+	qDebug() << "Type"<<rdb->text();
+	qDebug() << "ID"<<RadioTextToID(rdb->text());
+	
 }
 
-int  CuttingSampleLabel::RadioTextToID(QString &str) //得到 radioButton的 ID
+int CuttingSampleLabel::RadioTextToID(QString &str) //得到 radioButton的 ID
 {
-	QString ids[] = { "Spot", "Metal", "Oil", "Others" };
-	int len = sizeof(ids) / sizeof(*ids);
-
-	for (int i = 0; i < len; i++)
+	
+	for (int i = 0; i < _labelRadioButton.size(); i++)
 	{
-		if (ids[i] == str)
+		if (QString::fromStdString(_labelRadioButton[i]) == str)
 		{
 			return i;
 		}
 
 	}
 	return -1;
+}
+
+void CuttingSampleLabel::InitialLabelRadioButton() //初始化
+{
+	_labelRadioButton.clear();
+
+	QFont font;
+	font.setFamily(QStringLiteral("Arial"));
+	font.setPointSize(12);
+	font.setBold(false);
+	font.setWeight(50);
+
+	QRadioButton *spotButton;
+	spotButton = new QRadioButton(ui.groupLabelType);
+	spotButton->setObjectName("Spotbt");
+	spotButton->setFont(font);
+	spotButton->setText("Spot");
+	_vbox->addWidget(spotButton);
+	spotButton->setChecked(true);
+	_labelType.name = spotButton->text().toStdString();
+	connect(spotButton, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick())); //點到Radio Button
+	_labelRadioButton.push_back("Spot");
+
+	QRadioButton *metalButton;
+	metalButton = new QRadioButton(ui.groupLabelType);
+	metalButton->setObjectName("Metalbt");
+	metalButton->setFont(font);
+	metalButton->setText("Metal");
+	_vbox->addWidget(metalButton);
+	connect(metalButton, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick())); //點到Radio Button
+	_labelRadioButton.push_back("Metal");
+
+	QRadioButton *oilButton;
+	oilButton = new QRadioButton(ui.groupLabelType);
+	oilButton->setObjectName("Oilbt");
+	oilButton->setFont(font);
+	oilButton->setText("Oil");
+	_vbox->addWidget(oilButton);
+	connect(oilButton, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick())); //點到Radio Button
+	_labelRadioButton.push_back("Oil");
+
+	ui.groupLabelType->setLayout(_vbox);
+
+}
+
+void CuttingSampleLabel::AddLabelRadioButton() //新增
+{ 
+	if (!CheckRadioButton())
+	{
+		QMessageBox::information(this, tr("Warring"), tr("Label Type Exist"));
+	}
+
+	else if (ui._lineEdit->text() != "" && CheckText())
+	{
+		QFont font;
+		font.setFamily(QStringLiteral("Arial"));
+		font.setPointSize(12);
+		font.setBold(false);
+		font.setWeight(50);
+
+		QRadioButton *tempButton;
+		tempButton = new QRadioButton(ui.groupLabelType);
+		tempButton->setObjectName(ui._lineEdit->text() + "bt");
+		tempButton->setFont(font);
+		tempButton->setText(ui._lineEdit->text());
+		_vbox->addWidget(tempButton);
+		connect(tempButton, SIGNAL(pressed()), this, SLOT(OnRadioButtonClick())); //點到Radio Button
+		_labelRadioButton.push_back(ui._lineEdit->text().toStdString());
+
+		std::string path = "Result//" + ui._lineEdit->text().toStdString();
+		_mkdir(path.c_str());
+		std::vector<LabelType> temp;
+		_captureImage._result.push_back(temp);
+		//qDebug() << "CAP" << _captureImage._result.size();
+
+		ui._radioAddLabel->setVisible(false);
+		ui._lineEdit->setVisible(false);
+		ui._okPushButton->setVisible(false);
+	}
+	else
+	{
+		QMessageBox::information(this, tr("Warring"), tr("Please Key in label type with a~z A~Z 0~9 !!"));
+	}
+
+}
+
+bool CuttingSampleLabel::CheckText() //檢查是否符合
+{
+	for (int i = 0; i < ui._lineEdit->text().size(); i++)
+	{
+		if (ui._lineEdit->text()[i] >= 'a' && ui._lineEdit->text()[i] <= 'z' || ui._lineEdit->text()[i] >= 'A' || ui._lineEdit->text()[i] <= 'Z' || ui._lineEdit->text()[i] >= '0'&&ui._lineEdit->text()[i] <= '9')
+		{
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+bool CuttingSampleLabel::CheckRadioButton()
+{
+	for (int i = 0; i < _labelRadioButton.size(); i++)
+	{
+		if (ui._lineEdit->text().toStdString() == _labelRadioButton[i])
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+void CuttingSampleLabel::ShowAddLabelRadioButton()
+{
+	ui._radioAddLabel->setVisible(true);
+	ui._lineEdit->setVisible(true);
+	ui._lineEdit->setText("");
+	ui._okPushButton->setVisible(true);
 }
 
 void CuttingSampleLabel::OpenFolder()
@@ -157,6 +285,7 @@ void CuttingSampleLabel::OpenFile()
 		//qDebug() << "openSuccess";
 	}
 	CheckImageNumbers();
+
 }
 
 void CuttingSampleLabel::OpenRawData() //開原始檔案
@@ -319,6 +448,7 @@ void CuttingSampleLabel::MouseReleased()
 		_labelType._result = cv::Rect(_captureImage._startX, _captureImage._startY, _captureImage._endX - _captureImage._startX, _captureImage._endY - _captureImage._startY);
 		_captureImage._result[_labelType.typeId].push_back(_labelType);
 		qDebug() << _captureImage._result[_labelType.typeId].size();
+
 
 		ConvertMatToQImage();
 		ShowQImage();

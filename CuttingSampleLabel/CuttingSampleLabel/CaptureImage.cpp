@@ -24,7 +24,7 @@ void CaptureImage::DrawResult()
 	std::string savePath;
 	std::string rowPath;
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < _result.size(); i++)
 	{
 		for (int j = 0; j < _result[i].size(); j++)
 		{	

@@ -7,6 +7,8 @@
 #include <QMouseEvent>
 #include <QPoint>
 #include <QtWidgets/QMainWindow>
+#include <QHBoxLayout>
+#include <QRadioButton>
 
 #include "ui_cuttingsamplelabel.h"
 #include "LabelType.h"
@@ -19,7 +21,8 @@ class CuttingSampleLabel : public QMainWindow
 public:
 
 	CaptureImage _captureImage;
-
+	QVBoxLayout *_vbox = new QVBoxLayout;
+	
 	CuttingSampleLabel(QWidget *parent = 0);
 	~CuttingSampleLabel();
 
@@ -32,8 +35,9 @@ private:
 	QStringList _filePath;
 	QImage _qImage;
 	LabelType _labelType;
-	std::vector<QRadioButton> _labelRadioButton;
-	std::vector<QRadioButton> _colorRadioButton;
+	std::vector<std::string> _labelRadioButton; //Label的Radio
+	std::vector<std::string> _colorRadioButton; //Color的Radio
+	
 
 	bool _saveFlag = false;
 
@@ -44,7 +48,10 @@ private:
 	void ShowQImage(); //在GraphicsView 顯示
 	void InitialCaptureResult(); //初始化Result次數
 	void CheckImageNumbers(); //看還有幾張
+	void InitialLabelRadioButton();
  	int  RadioTextToID(QString &str); 
+	bool CheckText();//確認是否符合規則
+	bool CheckRadioButton();
 
 private slots:
 
@@ -58,6 +65,8 @@ private slots:
 	void MouseMoved();
 	void MouseReleased();	
 	void OnRadioButtonClick();
+	void AddLabelRadioButton();//增加Button 確定
+	void ShowAddLabelRadioButton(); //顯示
 
 };
 
