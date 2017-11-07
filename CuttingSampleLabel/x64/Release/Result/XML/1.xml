@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<r1>
+    <entry term="Spot">
+        <position>(118,97,172,119)</position>
+        <position>(240,213,55,88)</position>
+        <position>(244,290,70,92)</position>
+        <position>(163,311,50,46)</position>
+    </entry>
+    <entry term="Oil">
+        <position>(365,113,59,64)</position>
+    </entry>
+</r1>

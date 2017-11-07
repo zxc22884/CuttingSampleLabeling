@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="CuttingSampleLabel">
+    <file>Icon/previousState.png</file>
     <file>Icon/next.png</file>
     <file>Icon/previous.png</file>
     <file>Icon/label.png</file>

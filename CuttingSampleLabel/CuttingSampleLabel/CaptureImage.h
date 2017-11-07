@@ -18,6 +18,7 @@ public:
 	cv::Mat _destData;
 	cv::Mat _captureResultData;
 
+
 	int _startX, _startY;
 	int _moveX, _moveY;
 	int _endX, _endY;
@@ -26,6 +27,7 @@ public:
 
 	std::vector<std::vector<LabelType>> _result; //放結果
 	std::vector<std::string> _fileName; //檔名
+	std::vector<int> _state; //步驟
 
 	void SetUpImageQueue(QStringList qFileName); //把檔名存入
 	void DrawResult(); //畫結果

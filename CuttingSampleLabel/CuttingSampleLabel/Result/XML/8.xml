@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<r8>
+    <entry term="Spot">
+        <position>(80,64,146,85)</position>
+        <position>(169,143,74,79)</position>
+    </entry>
+    <entry term="Metal">
+        <position>(192,210,82,58)</position>
+    </entry>
+    <entry term="Oil">
+        <position>(321,251,96,45)</position>
+        <position>(167,307,196,81)</position>
+        <position>(390,131,100,54)</position>
+    </entry>
+</r8>

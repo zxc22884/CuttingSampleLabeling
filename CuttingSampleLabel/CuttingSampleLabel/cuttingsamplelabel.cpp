@@ -22,7 +22,7 @@ CuttingSampleLabel::CuttingSampleLabel(QWidget *parent)
 	setAcceptDrops(true);
 	setMouseTracking(true);
 	InitialLabelRadioButton();
-
+	InitialColorButton();
 
 }
 
@@ -34,6 +34,8 @@ CuttingSampleLabel::~CuttingSampleLabel()
 void CuttingSampleLabel::InitialCaptureResult()
 {
 	_captureImage._result.clear();
+	_captureImage._state.clear();
+	ui._actionPreviousState->setEnabled(false);
 
 	std::vector<LabelType> temp;
 	for (int i = 0; i < _labelRadioButton.size(); i++)
@@ -53,12 +55,23 @@ void CuttingSampleLabel::CreateActions()
 	connect(ui._actionSave, SIGNAL(triggered()), this, SLOT(SaveResult())); //儲存
 	connect(ui._actionNextImage, SIGNAL(triggered()), this, SLOT(NextImage())); //下一張
 	connect(ui._actionPreviousImage, SIGNAL(triggered()), this, SLOT(PreviousImage())); //上一張
+	connect(ui._actionLabel, SIGNAL(triggered()), this, SLOT(ShowAddLabelRadioButton())); //新增種類
+	connect(ui._actionPreviousState, SIGNAL(triggered()), this, SLOT(PreviousButtonClick())); //上一步
+
 	connect(ui.graphicsView, SIGNAL(MousePress()), this, SLOT(MousePressed()));
 	connect(ui.graphicsView, SIGNAL(MouseMove()), this, SLOT(MouseMoved()));
 	connect(ui.graphicsView, SIGNAL(MouseRelease()), this, SLOT(MouseReleased()));
-	connect(ui._actionLabel, SIGNAL(triggered()), this, SLOT(ShowAddLabelRadioButton())); //新增種類
-	connect(ui._okPushButton, SIGNAL(clicked()), this, SLOT(AddLabelRadioButton()));
 
+
+	connect(ui._okPushButton, SIGNAL(clicked()), this, SLOT(AddLabelRadioButton()));
+	connect(ui._redButton, SIGNAL(clicked()), this, SLOT(OnColorButtonClick())); //框的顏色
+	connect(ui._greenButton, SIGNAL(clicked()), this, SLOT(OnColorButtonClick())); //框的顏色
+	connect(ui._blueButton, SIGNAL(clicked()), this, SLOT(OnColorButtonClick())); //框的顏色
+	connect(ui._yellowButton, SIGNAL(clicked()), this, SLOT(OnColorButtonClick())); //框的顏色
+	connect(ui._blackButton, SIGNAL(clicked()), this, SLOT(OnColorButtonClick())); //框的顏色
+	connect(ui._whiteButton, SIGNAL(clicked()), this, SLOT(OnColorButtonClick())); //框的顏色
+	
+	//ui._redButton->setEnabled(false);
 }
 
 void CuttingSampleLabel::AddActionToToolBar()
@@ -75,9 +88,12 @@ void CuttingSampleLabel::AddActionToToolBar()
 	ui.mainToolBar->addSeparator();
 	ui.mainToolBar->addAction(ui._actionPreviousImage);
 	ui.mainToolBar->addAction(ui._actionNextImage);
+	ui.mainToolBar->addSeparator();
+	ui.mainToolBar->addAction(ui._actionPreviousState);
 
 	ui._actionNextImage->setEnabled(false);
 	ui._actionPreviousImage->setEnabled(false);
+	ui._actionPreviousState->setEnabled(false);
 	_labelType.typeId = 0;
 }
 
@@ -198,11 +214,12 @@ bool CuttingSampleLabel::CheckText() //檢查是否符合
 {
 	for (int i = 0; i < ui._lineEdit->text().size(); i++)
 	{
-		if (ui._lineEdit->text()[i] >= 'a' && ui._lineEdit->text()[i] <= 'z' || ui._lineEdit->text()[i] >= 'A' || ui._lineEdit->text()[i] <= 'Z' || ui._lineEdit->text()[i] >= '0'&&ui._lineEdit->text()[i] <= '9')
+		if ((ui._lineEdit->text()[i] >= 'a' && ui._lineEdit->text()[i] <= 'z' || ui._lineEdit->text()[i] >= 'A' || ui._lineEdit->text()[i] <= 'Z' || ui._lineEdit->text()[i] >= '0'&&ui._lineEdit->text()[i] <= '9') && ui._lineEdit->text()[i] != ' '&& ui._lineEdit->text()[i] != '/'&& ui._lineEdit->text()[i] != '?' && ui._lineEdit->text()[i] != '>' && ui._lineEdit->text()[i] != '<'&& ui._lineEdit->text()[i] != '"'&& ui._lineEdit->text()[i] != '*'&& ui._lineEdit->text()[i] != '|'&& ui._lineEdit->text()[i] != '\\')
 		{
 		}
 		else
 		{
+			ui._lineEdit->clear();
 			return false;
 		}
 	}
@@ -221,7 +238,60 @@ bool CuttingSampleLabel::CheckRadioButton()
 	return true;
 }
 
-void CuttingSampleLabel::ShowAddLabelRadioButton()
+void CuttingSampleLabel::InitialColorButton()
+{
+	ui._redButton->setStyleSheet("background-color: rgb(255,0,0);");
+	ui._blueButton->setStyleSheet("background-color: rgb(0,0,255);");
+	ui._greenButton->setStyleSheet("background-color: rgb(0,255,0);");
+	ui._yellowButton->setStyleSheet("background-color: rgb(255,255,0);");
+	ui._blackButton->setStyleSheet("background-color: rgb(0,0,0);");
+	ui._whiteButton->setStyleSheet("background-color: rgb(255,255,255);");
+
+}
+
+void CuttingSampleLabel::OnColorButtonClick() //選顏色
+{
+	QObject* obj = sender();
+	QPushButton *rdb = qobject_cast<QPushButton*>(obj);
+	
+	if (rdb->text() == "Red")
+	{
+		_labelType._rectangleColor = cv::Scalar(0, 0, 255);
+		_labelType._textColor = cv::Scalar(0, 255, 255);
+	}
+
+	if (rdb->text() == "Green")
+	{
+		_labelType._rectangleColor = cv::Scalar(0, 255, 0);
+		_labelType._textColor = cv::Scalar(255, 0, 0);
+	}
+
+	if (rdb->text() == "Blue")
+	{
+		_labelType._rectangleColor = cv::Scalar(255, 0, 0);
+		_labelType._textColor = cv::Scalar(0, 255, 0);
+	}
+
+	if (rdb->text() == "Yellow")
+	{
+		_labelType._rectangleColor = cv::Scalar(0, 255, 255);
+		_labelType._textColor = cv::Scalar(0, 0, 255);
+	}
+
+	if (rdb->text() == "Black")
+	{
+		_labelType._rectangleColor = cv::Scalar(0, 0, 0);
+		_labelType._textColor = cv::Scalar(255, 255, 255);
+	}
+
+	if (rdb->text() == "White")
+	{
+		_labelType._rectangleColor = cv::Scalar(255, 255, 255);
+		_labelType ._textColor = cv::Scalar(0, 0, 0);
+	}
+}
+
+void CuttingSampleLabel::ShowAddLabelRadioButton() //顯示新增的
 {
 	ui._radioAddLabel->setVisible(true);
 	ui._lineEdit->setVisible(true);
@@ -331,6 +401,8 @@ void CuttingSampleLabel::SaveResult() //儲存
 	if (_saveFlag)
 	{
 		_captureImage.DrawResult();
+		_captureImage._state.clear();
+		ui._actionPreviousState->setEnabled(false);
 		QMessageBox::information(this, tr("Save"), tr("Success"));
 
 		if (_captureImage._fileNumber < _captureImage._fileName.size())
@@ -356,7 +428,7 @@ void CuttingSampleLabel::SaveResult() //儲存
 
 }
 
-void CuttingSampleLabel::NextImage()
+void CuttingSampleLabel::NextImage() //下一張圖
 {
 	_captureImage._fileNumber++;
 	ui.graphicsView->_mouseStatus = true;
@@ -366,7 +438,7 @@ void CuttingSampleLabel::NextImage()
 	CheckImageNumbers();
 }
 
-void CuttingSampleLabel::PreviousImage()
+void CuttingSampleLabel::PreviousImage()//上一張圖
 {
 	_captureImage._fileNumber--;
 	ui.graphicsView->_mouseStatus = true;
@@ -375,7 +447,7 @@ void CuttingSampleLabel::PreviousImage()
 	CheckImageNumbers();
 }
 
-void CuttingSampleLabel::CheckImageNumbers()
+void CuttingSampleLabel::CheckImageNumbers() //檢查有幾張圖
 {
 
 	if (_captureImage._fileNumber > 0 && _captureImage._fileNumber + 1 < _captureImage._fileName.size())
@@ -384,17 +456,39 @@ void CuttingSampleLabel::CheckImageNumbers()
 		ui._actionPreviousImage->setEnabled(true);
 	}
 
-	if (_captureImage._fileNumber == 0 && _captureImage._fileNumber + 1 < _captureImage._fileName.size())
+	else if (_captureImage._fileNumber == 0 && _captureImage._fileNumber + 1 < _captureImage._fileName.size())
 	{
 		ui._actionNextImage->setEnabled(true);
 		ui._actionPreviousImage->setEnabled(false);
 	}
 
-	if (_captureImage._fileNumber + 1 == _captureImage._fileName.size() && _captureImage._fileNumber != 0)
+	else if (_captureImage._fileNumber + 1 == _captureImage._fileName.size() && _captureImage._fileNumber != 0)
 	{
 		ui._actionNextImage->setEnabled(false);
 		ui._actionPreviousImage->setEnabled(true);
 	}
+	else
+	{
+		ui._actionNextImage->setEnabled(false);
+		ui._actionPreviousImage->setEnabled(false);
+	}
+}
+
+void CuttingSampleLabel::PreviousButtonClick() //前一步
+{
+	int number = 0;
+
+	number = _captureImage._state[_captureImage._state.size() - 1];
+	_captureImage._state.pop_back();
+	_captureImage._result[number].pop_back();
+
+	if (_captureImage._state.size() == 0)
+	{
+		ui._actionPreviousState->setEnabled(false);
+	}
+	_captureImage.DrawCapture();
+	ConvertMatToQImage();
+	ShowQImage();
 
 }
 
@@ -439,17 +533,20 @@ void CuttingSampleLabel::MouseReleased()
 		//qDebug() << "EndX" << ui.graphicsView->_endX;
 		//qDebug() << "EndY" << ui.graphicsView->_endY;
 
-		cv::cvtColor(_captureImage._rawData, _captureImage._rawData, CV_BGR2RGB);
-		cv::rectangle(_captureImage._rawData, cv::Point(_captureImage._startX, _captureImage._startY - 15), cv::Point(_captureImage._endX, _captureImage._startY), cv::Scalar(0, 0, 255), -1);
-		cv::putText(_captureImage._rawData, _labelType.name, cv::Point(_captureImage._startX, _captureImage._startY - 5), 5, 0.55, cv::Scalar(0, 255, 255), 1);
-		cv::rectangle(_captureImage._rawData, cv::Point(_captureImage._startX, _captureImage._startY), cv::Point(_captureImage._endX, _captureImage._endY), cv::Scalar(0, 0, 255), 1, 0);
-		_captureImage._destData = _captureImage._rawData.clone();
+		//cv::cvtColor(_captureImage._rawData, _captureImage._rawData, CV_BGR2RGB);
+		//cv::rectangle(_captureImage._rawData, cv::Point(_captureImage._startX, _captureImage._startY - 15), cv::Point(_captureImage._endX, _captureImage._startY), _captureImage._rectangleColor, -1);
+		//cv::putText(_captureImage._rawData, _labelType.name, cv::Point(_captureImage._startX, _captureImage._startY - 5), 5, 0.55, _captureImage._textColor, 1);
+		//cv::rectangle(_captureImage._rawData, cv::Point(_captureImage._startX, _captureImage._startY), cv::Point(_captureImage._endX, _captureImage._endY), _captureImage._rectangleColor, 1, 0);
+		//_captureImage._destData = _captureImage._rawData.clone();
 
 		_labelType._result = cv::Rect(_captureImage._startX, _captureImage._startY, _captureImage._endX - _captureImage._startX, _captureImage._endY - _captureImage._startY);
 		_captureImage._result[_labelType.typeId].push_back(_labelType);
+		
+		_captureImage._state.push_back(_labelType.typeId);
+		ui._actionPreviousState->setEnabled(true);
 		qDebug() << _captureImage._result[_labelType.typeId].size();
-
-
+		
+		_captureImage.DrawCapture();
 		ConvertMatToQImage();
 		ShowQImage();
 	}

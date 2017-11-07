@@ -15,6 +15,9 @@ public:
 	std::string name;
 	int typeId;
 
+	cv::Scalar _rectangleColor = cv::Scalar(0, 0, 255);
+	cv::Scalar _textColor = cv::Scalar(0, 255, 255);
+
 	cv::Rect _result;
 
 	LabelType();
